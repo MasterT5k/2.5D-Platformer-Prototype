@@ -33,8 +33,7 @@ public class DeadZone : MonoBehaviour
 
     IEnumerator CCEnableRoutine(CharacterController controller)
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForEndOfFrame();
         controller.enabled = true;
     }
-
 }

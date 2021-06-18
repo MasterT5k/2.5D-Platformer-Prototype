@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    //OnTriggerEnter
-    //give the player a coin
-    //destroy this object
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
@@ -21,5 +18,4 @@ public class Coin : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
 }

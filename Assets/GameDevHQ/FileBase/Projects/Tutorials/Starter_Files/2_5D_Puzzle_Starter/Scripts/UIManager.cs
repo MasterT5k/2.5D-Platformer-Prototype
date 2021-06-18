@@ -10,12 +10,11 @@ public class UIManager : MonoBehaviour
 
     public void UpdateCoinDisplay(int coins)
     {
-        _coinText.text = "Coins: " + coins.ToString();
+        _coinText.text = "Coins: " + coins;
     }
 
     public void UpdateLivesDisplay(int lives)
     {
-        _livesText.text = "Lives: " + lives.ToString();
-    }
-   
+        _livesText.text = "Lives: " + lives;
+    }   
 }
