@@ -9,14 +9,20 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _lives = 3;
     [SerializeField]
-    private float _speed = 5.0f;
+    private float _speed = 5f;
     [SerializeField]
-    private float _gravity = 1.0f;
+    private float _gravity = 1f;
     [SerializeField]
-    private float _jumpHeight = 15.0f;
+    private float _jumpHeight = 15f;
+    [SerializeField]
+    private float _gravityDivider = 4f;
     private float _yVelocity;
     private bool _canDoubleJump = false;
     private int _coins;
+    private bool _canWallJump = false;
+    private Vector3 _direction, _velocity;
+    private Vector3 _wallHitNormal;
+    private bool _touchingWall = false;
 
     private CharacterController _controller;
     private UIManager _uiManager;
@@ -40,36 +46,60 @@ public class Player : MonoBehaviour
     void Update()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        Vector3 direction = new Vector3(horizontalInput, 0, 0);
-        Vector3 velocity = direction * _speed;
 
         if (_controller.isGrounded == true)
         {
+            _touchingWall = false;
+            _canWallJump = false;
+            _direction = new Vector3(horizontalInput, 0);
+            _velocity = _direction * _speed;
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _yVelocity = _jumpHeight;
-                _canDoubleJump = true;
+                _canDoubleJump = true;                
             }
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (_canDoubleJump == true)
+                if (_canWallJump == true)
+                {
+                    _velocity = _wallHitNormal * _speed;
+                    _yVelocity = _jumpHeight;
+                    _canWallJump = false;
+                    _canDoubleJump = false;
+                    _touchingWall = false;
+                }
+                else if (_canDoubleJump == true)
                 {
                     _yVelocity += _jumpHeight;
                     _canDoubleJump = false;
                 }
-            }
-
-            _yVelocity -= _gravity;
+            }            
         }
 
-        velocity.y = _yVelocity;
+        _velocity.y = _yVelocity;
 
         if (_controller.enabled != false)
         {
-            _controller.Move(velocity * Time.deltaTime); 
+            _controller.Move(_velocity * Time.deltaTime); 
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (_controller.isGrounded == false)
+        {
+            if (_touchingWall == false)
+            {
+                _yVelocity -= _gravity; 
+            }
+            else
+            {
+                _yVelocity -= _gravity / _gravityDivider;
+            }
         }
     }
 
@@ -101,5 +131,16 @@ public class Player : MonoBehaviour
     public int CheckCoins()
     {
         return _coins;
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (_controller.isGrounded == false && hit.transform.tag == "Wall")
+        {
+            _touchingWall = true;
+            _wallHitNormal = hit.normal;
+            _canWallJump = true;
+            Debug.DrawRay(hit.point, hit.normal, Color.blue);
+        }
     }
 }
