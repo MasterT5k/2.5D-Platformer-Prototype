@@ -1757,7 +1757,7 @@ GameObject:
   - component: {fileID: 1276055930}
   m_Layer: 0
   m_Name: Movable_Box
-  m_TagString: Untagged
+  m_TagString: Moveable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1790,7 +1790,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!65 &1276055931
 BoxCollider:
@@ -2687,7 +2687,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1627146001
 Transform:
   m_ObjectHideFlags: 0
@@ -3215,7 +3215,8 @@ MonoBehaviour:
   _speed: 5
   _gravity: 1
   _jumpHeight: 15
-  _gravityDivider: 4
+  _gravityDivider: 1
+  _pushPower: 2
 --- !u!143 &1798249447
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3291,7 +3292,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798249445}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 22.5, y: 16.36, z: 0}
+  m_LocalPosition: {x: 14.13, y: 26.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
@@ -3313,8 +3314,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1868382301}
-  - component: {fileID: 1868382304}
   - component: {fileID: 1868382302}
+  - component: {fileID: 1868382303}
   m_Layer: 0
   m_Name: Pressure_Pad
   m_TagString: Untagged
@@ -3350,14 +3351,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1868382304
-MeshFilter:
+--- !u!114 &1868382303
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868382300}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f17af0fe842c0c548bc6dab8198ed0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _offset: 0.1
+  _activatedColor: {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &1915658565
 GameObject:
   m_ObjectHideFlags: 0

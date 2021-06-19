@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     private float _jumpHeight = 15f;
     [SerializeField]
     private float _gravityDivider = 4f;
+    [SerializeField]
+    private float _pushPower = 5f;
     private float _yVelocity;
     private bool _canDoubleJump = false;
     private int _coins;
@@ -135,6 +137,21 @@ public class Player : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        if (hit.transform.tag == "Moveable")
+        {
+            Rigidbody body = hit.gameObject.GetComponent<Rigidbody>();
+            if (body != null)
+            {
+                if (hit.moveDirection.y < -0.3f)
+                {
+                    return;
+                }
+
+                Vector3 pushDirection = new Vector3(hit.moveDirection.x, 0);
+                body.velocity = pushDirection * _pushPower;
+            }
+        }
+
         if (_controller.isGrounded == false && hit.transform.tag == "Wall")
         {
             _touchingWall = true;
