@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - Moveable
+  - LedgeGrab
   layers:
   - Default
   - TransparentFX
