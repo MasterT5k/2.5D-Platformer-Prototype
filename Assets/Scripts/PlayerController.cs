@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float _jumpHeight = 15f;
 
-    private bool _grabingLedge = false;
+    private bool _grabbingLedge = false;
     private bool _flip = false;
     private bool _jumping = false;
     private float _yVelocity;
@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (_grabingLedge == false)
+        if (_grabbingLedge == false)
         {
             CalculateMovement();
         }
@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour
     public void GrabLedge(Vector3 position, Ledge currentLedge)
     {
         transform.position = position;
-        _grabingLedge = true;
+        _grabbingLedge = true;
         _anim.SetBool("GrabLedge", true);
         _anim.SetBool("Jump", false);
         _anim.SetFloat("Speed", 0);
@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour
             Vector3 position = _activeLedge.GetFinalPosition();
             transform.position = position;
         }
-        _grabingLedge = false;
+        _grabbingLedge = false;
         _anim.SetBool("GrabLedge", false);
         _controller.enabled = true;
     }
