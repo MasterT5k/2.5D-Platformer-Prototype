@@ -5,46 +5,72 @@ using UnityEngine;
 public class MovingPlatform : MonoBehaviour
 {
     [SerializeField]
-    private Transform _targetA, _targetB;
-    [SerializeField]
     private Transform[] _waypoints;
-    [SerializeField]
     private int _currentWaypoint;
     [SerializeField]
     private float _speed = 3.0f;
-    private bool _movingToPoint = false;
+    [SerializeField]
+    private bool _reverseAtEnd = false;
+    private bool _inReverse = false;
+    private bool _atWaypoint = false;
 
     void FixedUpdate()
     {
+        if (_waypoints.Length < 2)
+        {
+            return;
+        }
+
         if (transform.position == _waypoints[_currentWaypoint].position)
         {
-
+            _atWaypoint = true;
         }
-        if (_movingToPoint == false)
+
+        if (_atWaypoint == true)
         {
+            if (_currentWaypoint == _waypoints.Length - 1)
+            {
+                if (_reverseAtEnd == true)
+                {
+                    _inReverse = true;
+                    _currentWaypoint--;
+                }
+                else
+                {
+                    _currentWaypoint = 0;
+                }
 
+                _atWaypoint = false;
+            }
+            else
+            {
+                if (_inReverse == true)
+                {
+                    _currentWaypoint--;
+                    if (_currentWaypoint <= 0)
+                    {
+                        _currentWaypoint = 0;
+                        _inReverse = false;
+                    }
+                }
+                else
+                {
+                    _currentWaypoint++;
+                    if (_currentWaypoint >= _waypoints.Length)
+                    {
+                        _currentWaypoint = _waypoints.Length - 1;
+                    }
+                }
+
+                _atWaypoint = false;
+            }
         }
-
-
-
-
-        //if (_movingToPoint == false)
-        //{
-        //    transform.position = Vector3.MoveTowards(transform.position, _targetA.position, _speed * Time.deltaTime);
-        //}
-        //else if (_movingToPoint == true)
-        //{
-        //    transform.position = Vector3.MoveTowards(transform.position, _targetB.position, _speed * Time.deltaTime);
-        //}
-
-        //if (transform.position == _targetB.position)
-        //{
-        //    _movingToPoint = false;
-        //}
-        //else if (transform.position == _targetA.position)
-        //{
-        //    _movingToPoint = true;
-        //}
+        else
+        {
+            Vector3 pointPosition = _waypoints[_currentWaypoint].position;
+            float adjustedSpeed = _speed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, pointPosition, adjustedSpeed);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

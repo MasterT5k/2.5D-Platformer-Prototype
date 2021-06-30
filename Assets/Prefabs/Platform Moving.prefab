@@ -1728,7 +1728,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 3.4298768, y: 1.298111, z: 22.67}
-  m_Center: {x: -0.1568191, y: 0.81116486, z: 0}
+  m_Center: {x: 0.1568191, y: 0.81116486, z: 0}
 --- !u!54 &7684950553941752685
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1759,7 +1759,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _targetA: {fileID: 0}
   _targetB: {fileID: 0}
+  _waypoints: []
+  _currentWaypoint: 0
   _speed: 3
+  _reverseAtEnd: 0
+  _atWaypoint: 0
 --- !u!1 &1486685163529694482
 GameObject:
   m_ObjectHideFlags: 0
@@ -4049,7 +4053,7 @@ GameObject:
   - component: {fileID: 4081338922096709243}
   - component: {fileID: 1738920123781829022}
   - component: {fileID: 607865773788330707}
-  - component: {fileID: 5361182628954587201}
+  - component: {fileID: 5444170347338234173}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -4120,7 +4124,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5361182628954587201
+--- !u!65 &5444170347338234173
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4131,8 +4135,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1.0000001, z: -1}
+  m_Center: {x: 0, y: 0, z: 0.00000047683716}
 --- !u!1 &4379134298782933913
 GameObject:
   m_ObjectHideFlags: 0
@@ -5208,7 +5212,7 @@ GameObject:
   - component: {fileID: 4854590961920868256}
   - component: {fileID: 4641013043216704284}
   - component: {fileID: 4201457038352583292}
-  - component: {fileID: 539856327101255048}
+  - component: {fileID: 2870175133455100505}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -5279,7 +5283,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &539856327101255048
+--- !u!65 &2870175133455100505
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5290,7 +5294,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 1.0000001, z: -1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5397203609107284399
 GameObject:
