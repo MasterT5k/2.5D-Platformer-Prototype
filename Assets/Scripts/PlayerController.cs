@@ -12,6 +12,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float _jumpHeight = 15f;
 
+    [Header("Roll Settings")]
+    [SerializeField]
+    private float _rollForce = 5f;
+    [SerializeField]
+    private Vector3 _colliderCenterSmall;
+    private Vector3 _colliderCenterStart;
+    [SerializeField]
+    private float _colliderHeightSmall = 1f;
+    private float _colliderHeightStart;
+
+    private bool _rolling = false;
     private bool _grabbingLedge = false;
     private bool _flip = false;
     private bool _jumping = false;
@@ -25,6 +36,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _controller = GetComponent<CharacterController>();
+
+        _colliderCenterStart = _controller.center;
+        _colliderHeightStart = _controller.height;
+
         _anim = GetComponentInChildren<Animator>();
         if (_anim == null)
         {
@@ -55,6 +70,7 @@ public class PlayerController : MonoBehaviour
         if (_controller.isGrounded == true)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
+
             _direction = new Vector3(0, 0, horizontalInput);
             _velocity = _direction * _speed;
 
@@ -88,6 +104,26 @@ public class PlayerController : MonoBehaviour
                 _jumping = true;
                 _yVelocity = _jumpHeight;
                 _anim.SetBool("Jump", true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _rolling == false)
+            {
+                _anim.SetTrigger("Roll");
+                _rolling = true;
+                _controller.center = _colliderCenterSmall;
+                _controller.height = _colliderHeightSmall;
+            }
+
+            if (_rolling == true)
+            {
+                if (_flip == false)
+                {
+                    _velocity.z += _rollForce;
+                }
+                else
+                {
+                    _velocity.z -= _rollForce;
+                }
             }
         }
         else
@@ -123,5 +159,12 @@ public class PlayerController : MonoBehaviour
         _grabbingLedge = false;
         _anim.SetBool("GrabLedge", false);
         _controller.enabled = true;
+    }
+
+    public void StopRoll()
+    {
+        _rolling = false;
+        _controller.center = _colliderCenterStart;
+        _controller.height = _colliderHeightStart;
     }
 }
