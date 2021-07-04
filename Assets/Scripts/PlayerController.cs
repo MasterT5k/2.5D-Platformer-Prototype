@@ -22,8 +22,22 @@ public class PlayerController : MonoBehaviour
     private float _colliderHeightSmall = 1f;
     private float _colliderHeightStart;
 
+    [Header("Ladder Settings")]
+    [SerializeField]
+    private float _climbSpeed = 4f;
+    [SerializeField]
+    private bool _climbingLadder = false;
+    [SerializeField]
+    private Ladder _currentLadder = null;
+    [SerializeField]
+    private bool _nextToLadder = false;
+    [SerializeField]
+    private bool _startAtBottom = false;
+
+
     private bool _rolling = false;
     private bool _grabbingLedge = false;
+    [SerializeField]
     private bool _flip = false;
     private bool _jumping = false;
     private float _yVelocity;
@@ -49,11 +63,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (_grabbingLedge == false)
+        if (_grabbingLedge == false && _climbingLadder == false)
         {
             CalculateMovement();
         }
-        else
+        else if (_grabbingLedge == true)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -62,6 +76,24 @@ public class PlayerController : MonoBehaviour
                     _anim.SetTrigger("ClimbUp");
                 }
             }
+        }
+        else if (_climbingLadder == true)
+        {
+            if (_startAtBottom == true)
+            {
+                _direction = new Vector3(0, 1, 0); 
+            }
+            else
+            {
+                _direction = new Vector3(0, -1, 0);
+                if (transform.position.y <= _currentLadder.GetBottomEndPosition().y)
+                {
+                    EndLadderClimb();
+                    return;
+                }
+            }
+            _velocity = _direction * _climbSpeed;
+            _controller.Move(_velocity * Time.deltaTime);
         }
     }
 
@@ -86,12 +118,12 @@ public class PlayerController : MonoBehaviour
             if (horizontalInput < 0 && _flip == false)
             {
                 _flip = true;
-                transform.rotation = Quaternion.Euler(transform.rotation.x, 180f, transform.rotation.z);
+                FlipPlayer(_flip);
             }
             else if (horizontalInput > 0 & _flip == true)
             {
                 _flip = false;
-                transform.rotation = Quaternion.Euler(transform.rotation.x, 0f, transform.rotation.z);
+                FlipPlayer(_flip);
             }
 
             if (_anim != null)
@@ -132,7 +164,49 @@ public class PlayerController : MonoBehaviour
         }
 
         _velocity.y = _yVelocity;
-        _controller.Move(_velocity * Time.deltaTime);
+        if (_controller.enabled == true)
+        {
+            _controller.Move(_velocity * Time.deltaTime); 
+        }
+
+        if (Input.GetKeyDown(KeyCode.E) && _nextToLadder == true)
+        {
+            if (_currentLadder != null)
+            {
+                _controller.enabled = false;
+                Vector3 climbPosition = transform.position;
+                climbPosition.z = _currentLadder.transform.position.z - _currentLadder.GetPlayerOffset();
+                transform.position = climbPosition;
+                _climbingLadder = true;
+                if (_startAtBottom == true)
+                {
+                    _anim.SetBool("ClimbUpLadder", true);
+                }
+                else
+                {
+                    _anim.SetBool("ClimbDownLadder", true);
+                }
+                _controller.enabled = true;
+
+                if (CheckLadderFlip() == false)
+                {
+                    FlipPlayer(!_flip);
+                    _flip = !_flip;
+                }
+            }
+        }
+    }
+
+    private void FlipPlayer(bool flip)
+    {
+        if (flip == true)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 180f, transform.rotation.z);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 0f, transform.rotation.z);
+        }
     }
 
     public void GrabLedge(Vector3 position, Ledge currentLedge)
@@ -166,5 +240,109 @@ public class PlayerController : MonoBehaviour
         _rolling = false;
         _controller.center = _colliderCenterStart;
         _controller.height = _colliderHeightStart;
+    }
+
+    public void EnterExitLadder( bool nearLadder, Ladder ladder)
+    {
+        if (nearLadder == true)
+        {
+            _nextToLadder = true;
+            _currentLadder = ladder;
+            if (ladder.transform.position.y > transform.position.y)
+            {
+                //Player at Bottom
+                _startAtBottom = true;
+            }
+            else
+            {
+                //Player at Top
+                _startAtBottom = false;
+            }
+        }
+        else
+        {
+            if (_currentLadder == ladder)
+            {
+                _nextToLadder = false;
+                _currentLadder = null;
+            }
+        }
+    }
+
+    public bool StartedAtLadderBottom()
+    {
+        return _startAtBottom;
+    }
+
+    public bool CheckClimbingLadder()
+    {
+        return _climbingLadder;
+    }
+
+    public void EndLadderClimb()
+    {
+        if (_currentLadder != null)
+        {
+            _climbingLadder = false;
+            if (_startAtBottom == true)
+            {
+                _anim.SetBool("ClimbUpLadder", false);
+                StartCoroutine(LadderEndRoutine(_startAtBottom, _currentLadder.GetTopEndPosition()));
+            }
+            else
+            {
+                _anim.SetBool("ClimbDownLadder", false);
+                StartCoroutine(LadderEndRoutine(_startAtBottom, _currentLadder.GetBottomEndPosition()));
+            }
+        }
+    }
+
+    private bool CheckLadderFlip()
+    {
+        if (transform.position.z > _currentLadder.transform.position.z)
+        {
+            if (_flip == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (_flip == true)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+
+    IEnumerator LadderEndRoutine(bool goingUp, Vector3 endPosition)
+    {
+        if (goingUp == false)
+        {
+            if (CheckLadderFlip() == true)
+            {
+                FlipPlayer(!_flip);
+                _flip = !_flip;
+            }
+        }
+
+        _controller.enabled = false;
+        float distance = Mathf.Infinity;
+        while (distance > 0.1f)
+        {
+            distance = Vector3.Distance(transform.position, endPosition);
+            transform.position = Vector3.MoveTowards(transform.position, endPosition, _speed * Time.deltaTime);
+            yield return null;
+        }
+        _startAtBottom = !_startAtBottom;
+        _controller.enabled = true;
     }
 }
