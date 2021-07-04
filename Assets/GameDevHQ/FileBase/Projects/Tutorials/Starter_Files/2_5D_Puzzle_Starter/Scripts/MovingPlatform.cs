@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 public class MovingPlatform : MonoBehaviour
 {
     [SerializeField]
-    private Transform[] _waypoints;
-    private int _currentWaypoint;
+    protected Transform[] _waypoints;
+    protected int _currentWaypoint;
     [SerializeField]
     private float _speed = 3.0f;
     [SerializeField]
     private bool _reverseAtEnd = false;
     private bool _inReverse = false;
-    private bool _atWaypoint = false;
+    protected bool _atWaypoint = false;
 
     void FixedUpdate()
     {
@@ -21,11 +22,30 @@ public class MovingPlatform : MonoBehaviour
             return;
         }
 
+        CheckPosition();
+
+        GetNextWaypoint();
+
+        CalculateMovement();
+    }
+
+    protected virtual void CalculateMovement()
+    {
+        Vector3 pointPosition = _waypoints[_currentWaypoint].position;
+        float adjustedSpeed = _speed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, pointPosition, adjustedSpeed);
+    }
+
+    protected virtual void CheckPosition()
+    {
         if (transform.position == _waypoints[_currentWaypoint].position)
         {
             _atWaypoint = true;
         }
+    }
 
+    void GetNextWaypoint()
+    {
         if (_atWaypoint == true)
         {
             if (_currentWaypoint == _waypoints.Length - 1)
@@ -65,15 +85,9 @@ public class MovingPlatform : MonoBehaviour
                 _atWaypoint = false;
             }
         }
-        else
-        {
-            Vector3 pointPosition = _waypoints[_currentWaypoint].position;
-            float adjustedSpeed = _speed * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, pointPosition, adjustedSpeed);
-        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
@@ -81,7 +95,7 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         if (other.tag == "Player")
         {

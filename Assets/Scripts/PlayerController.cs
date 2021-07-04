@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
                 _anim.SetFloat("Speed", Mathf.Abs(horizontalInput));
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && _rolling == false)
             {
                 _jumping = true;
                 _yVelocity = _jumpHeight;

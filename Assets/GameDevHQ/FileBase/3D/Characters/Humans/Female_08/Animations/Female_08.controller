@@ -388,7 +388,7 @@ AnimatorStateMachine:
     m_Position: {x: -40, y: 510, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6122334876351388293}
-    m_Position: {x: -40, y: 460, z: 0}
+    m_Position: {x: -230, y: 100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -476049960548665858}
     m_Position: {x: 600, y: 320, z: 0}
@@ -396,11 +396,12 @@ AnimatorStateMachine:
     m_State: {fileID: 9200195396596663488}
     m_Position: {x: 380, y: 320, z: 0}
   m_ChildStateMachines: []
-  m_AnyStateTransitions: []
+  m_AnyStateTransitions:
+  - {fileID: 5997399655223637226}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 50, y: -70, z: 0}
+  m_AnyStatePosition: {x: -210, y: -50, z: 0}
   m_EntryPosition: {x: 300, y: 120, z: 0}
   m_ExitPosition: {x: 230, y: -80, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
@@ -491,6 +492,12 @@ AnimatorController:
     m_Controller: {fileID: 0}
   - m_Name: Roll
     m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: ClimbLadder
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -907,6 +914,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2251faf49b0c47c4db2817131f811dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1101 &5997399655223637226
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: ClimbLadder
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 6122334876351388293}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &6032825816317513216
 AnimatorState:
   serializedVersion: 6
