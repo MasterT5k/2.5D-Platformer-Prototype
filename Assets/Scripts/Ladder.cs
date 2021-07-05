@@ -5,25 +5,23 @@ using UnityEngine;
 public class Ladder : MonoBehaviour
 {
     [SerializeField]
-    private float _playerOffset = 1f;
+    private float _playerOffset = -1f;
     [SerializeField]
     private Transform _bottomEndPos, _topEndPos;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public float GetPlayerOffset()
     {
         return _playerOffset;
+    }
+
+    public Vector3 GetTopEndPosition()
+    {
+        return _topEndPos.position;
+    }
+
+    public Vector3 GetBottomEndPosition()
+    {
+        return _bottomEndPos.position;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -63,15 +61,5 @@ public class Ladder : MonoBehaviour
                 }
             }
         }
-    }
-
-    public Vector3 GetTopEndPosition()
-    {
-        return _topEndPos.position;
-    }
-
-    public Vector3 GetBottomEndPosition()
-    {
-        return _bottomEndPos.position;
     }
 }

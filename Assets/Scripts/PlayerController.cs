@@ -26,18 +26,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float _climbSpeed = 4f;
     [SerializeField]
-    private bool _climbingLadder = false;
-    [SerializeField]
     private Ladder _currentLadder = null;
-    [SerializeField]
+    private bool _climbingLadder = false;
     private bool _nextToLadder = false;
-    [SerializeField]
     private bool _startAtBottom = false;
 
 
     private bool _rolling = false;
     private bool _grabbingLedge = false;
-    [SerializeField]
     private bool _flip = false;
     private bool _jumping = false;
     private float _yVelocity;
@@ -92,8 +88,11 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
             }
-            _velocity = _direction * _climbSpeed;
-            _controller.Move(_velocity * Time.deltaTime);
+            _velocity = _direction * _climbSpeed; 
+            if (_controller.enabled == true)
+            {
+                _controller.Move(_velocity * Time.deltaTime);
+            }
         }
     }
 
@@ -175,9 +174,11 @@ public class PlayerController : MonoBehaviour
             {
                 _controller.enabled = false;
                 Vector3 climbPosition = transform.position;
-                climbPosition.z = _currentLadder.transform.position.z - _currentLadder.GetPlayerOffset();
+                climbPosition.z = _currentLadder.transform.position.z + _currentLadder.GetPlayerOffset();
                 transform.position = climbPosition;
                 _climbingLadder = true;
+                _controller.enabled = true;
+
                 if (_startAtBottom == true)
                 {
                     _anim.SetBool("ClimbUpLadder", true);
@@ -186,7 +187,6 @@ public class PlayerController : MonoBehaviour
                 {
                     _anim.SetBool("ClimbDownLadder", true);
                 }
-                _controller.enabled = true;
 
                 if (CheckLadderFlip() == false)
                 {
@@ -197,7 +197,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void FlipPlayer(bool flip)
+    void FlipPlayer(bool flip)
     {
         if (flip == true)
         {
@@ -250,12 +250,10 @@ public class PlayerController : MonoBehaviour
             _currentLadder = ladder;
             if (ladder.transform.position.y > transform.position.y)
             {
-                //Player at Bottom
                 _startAtBottom = true;
             }
             else
             {
-                //Player at Top
                 _startAtBottom = false;
             }
         }
@@ -267,16 +265,6 @@ public class PlayerController : MonoBehaviour
                 _currentLadder = null;
             }
         }
-    }
-
-    public bool StartedAtLadderBottom()
-    {
-        return _startAtBottom;
-    }
-
-    public bool CheckClimbingLadder()
-    {
-        return _climbingLadder;
     }
 
     public void EndLadderClimb()
@@ -295,6 +283,16 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(LadderEndRoutine(_startAtBottom, _currentLadder.GetBottomEndPosition()));
             }
         }
+    }
+
+    public bool StartedAtLadderBottom()
+    {
+        return _startAtBottom;
+    }
+
+    public bool CheckClimbingLadder()
+    {
+        return _climbingLadder;
     }
 
     private bool CheckLadderFlip()
